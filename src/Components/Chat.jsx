@@ -19,11 +19,11 @@ export default class Chat extends Component {
         }
     }
 
-    componentWillUnmount = () => {
-        socket.on('disconnect', function() {
-            console.log("Disconnected");
-        });
-    }
+    // componentWillUnmount = () => {
+    //     socket.on('disconnect', function() {
+    //         console.log("Disconnected");
+    //     });
+    // }
 
     onChange = (e) => {
         e.preventDefault();

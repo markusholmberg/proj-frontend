@@ -1,8 +1,5 @@
-html {
+body, html {
     height: 100%;
-}
-
-body {
     font-family: sans-serif;
 }
 
@@ -10,13 +7,65 @@ span {
     float: right;
 }
 
-.title {
+.background {
+    background-image: url("/pog.jpg");
+        /* Set a specific height */
+    min-height: 100vh;
+
+    /* Create the parallax scrolling effect */
+    position: relative;
+    /* opacity: 0.65; */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.bgimg2 {
+    background-image: url("/bgimg2.png");
+    min-height: 400px;
+    position: relative;
+    /* opacity: 0.65; */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.bgimg2 div {
+    padding: 2em;
+}
+
+.bgimg2 div button {
+    margin-left: 1em;
+}
+
+.caption {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /* width: 100%; */
     text-align: center;
-    font-family: sans-serif;
+    color: #000;
+    margin: 0;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.caption span {
+    background-color: #111;
+    color: #fff;
+    padding: 18px;
+    font-size: 25px;
+    letter-spacing: 10px;
 }
 
 .nav {
     display: block;
+    position: fixed;
+    width: 100%;
+    z-index: 2;
+    top: 0;
 }
 
 .nav ul {
@@ -24,7 +73,7 @@ span {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #333;
+    background-color: #111;
 }
 
 .nav ul li {
@@ -36,15 +85,14 @@ span {
     color: white;
     text-align: center;
     padding: 14px 16px;
-    text-decoration: none;
 }
 
 .nav ul li a:hover {
-    background-color: #ff9224;
+    text-decoration: underline;
 }
 
 .active {
-    background-color: #ff8000;
+    text-decoration: underline;
 }
 
 a {
@@ -55,86 +103,27 @@ a:visited {
     text-decoration: none;
 }
 
-.img {
-    width: 20%;
-    float: right;
-    margin-right: 20px;
-    border-radius: 2em;
-}
-
-.about {
-    float: left;
-    width: 60%;
-}
-
-.first, .register, .chat {
-    margin: 0;
+.register {
+    background-image: url("/pog.jpg");
+    height: 100vh;
     width: 100%;
-    padding: 10px;
-}
-
-.reports {
-    width: 75%;
-    margin: 0;
-    padding: 10px;
-}
-
-.reportField {
-    display: block;
-    height: 20em;
-    width: 100%;
-    padding: .375rem .75rem;
-    margin-bottom: 1em;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ff8000;
-    border-radius: .25rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    resize: none;
-}
-
-.list {
-    display: block;
-    margin-top: 0.5em;
-}
-
-.reports ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
-.reports ul li {
-    float: left;
-}
-
-.reports ul li a {
-    font-family: sans-serif;
-    background-color: #ff8000;
-    outline: none;
-    box-shadow: 0 5px #999;
-    margin: 0.5em 0.5em;
-    border-radius: 15px;
-    display: block;
+    padding-top: 4em;
+    margin: 0 auto;
+    background-size: cover;
     color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow-y: scroll;
 }
 
-.reports ul li a:hover {
-    background-color: #ff9224;
-}
-
-.reports ul li a:active {
-    background-color: #ff9224;
-    box-shadow: 0 5px #666;
-    transform: translateY(4px);
+.registerForm {
+    background-color: rgba(17, 17, 17, 0.80);
+    width: 50%;
+    margin: 0 auto;
+    border-radius: 10px;
+    padding: 2em;
 }
 
 .btn-primary {
@@ -145,6 +134,27 @@ a:visited {
 
 .btn-primary:hover {
     background-color: #ff9224;
+}
+
+.form-control {
+    width: 25% !important;
+}
+
+input[type=submit] {
+    padding:5px 15px;
+    background:#ccc;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    width: 25%;
+}
+
+.items {
+    background-color: rgba(25, 25, 25, 0.80);
+    margin-bottom: 1em;
+    width: 40%;
+    border-radius: 0.5em;
 }
 
 .icon {
@@ -179,25 +189,22 @@ select {
     border-radius: 0.25rem;
 }
 
-.all-messages {
-    width: 100%;
-    height: 30vh;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 2rem;
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
 }
 
-.all-messages p:nth-child(2n) {
-    background-color: #ccc;
+/* Track */
+::-webkit-scrollbar-track {
+  /* box-shadow: inset 0 0 5px grey; */
+  border-radius: 10px;
+  background: #f1f1f1;
 }
 
-.new-message {
-    width: 100%;
-    height: 5vh;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 2rem;
-    font-size: 1.8rem;
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: red;
+  border-radius: 10px;
 }
 
 @media (min-width: 768px) {

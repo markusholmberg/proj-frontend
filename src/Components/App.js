@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Route, NavLink, BrowserRouter as Router } from 'react-router-dom';
 // import '../style/App.css';
 import Me from './Me';
-import Reports from './Reports';
 import Register from './Register';
 import Login from './Login';
-import Chat from './Chat';
+import Trade from './Trade';
+import Profile from './Profile';
 
 export default class App extends Component {
     render() {
@@ -19,27 +19,37 @@ export default class App extends Component {
                                     <NavLink activeClassName="active" exact={true} to="/">Home</NavLink>
                                 </li>
                                 <li>
-                                    <NavLink activeClassName="active" to="/reports">Reports</NavLink>
+                                    <NavLink activeClassName="active" to="/trade">Trade</NavLink>
                                 </li>
-                                <li>
-                                    <NavLink activeClassName="active" to="/chat">Chat</NavLink>
-                                </li>
+                                {localStorage.getItem("access_token") !== null ?
+                                    null
+                                :
                                 <li>
                                     <NavLink activeClassName="active" to="/register">Register</NavLink>
                                 </li>
-                                <li>
-                                    <NavLink activeClassName="active" to="/login">Login</NavLink>
-                                </li>
-                                <li style={{float: "right", display: "block", padding: "14px 16px", color: "#ff8000"}}>
-                                    JSRamverk Me-page
-                                </li>
+                                }
+                                {localStorage.getItem("access_token") !== null ?
+                                    <li>
+                                        <NavLink activeClassName="active" to="/login">Logout</NavLink>
+                                    </li>
+                                :
+                                    <li>
+                                        <NavLink activeClassName="active" to="/login">Login</NavLink>
+                                    </li>
+                                }
+                                {localStorage.getItem("access_token") !== null ?
+                                    <li>
+                                        <NavLink activeClassName="active" to={`/profile/${localStorage.getItem('user')}`}>Profile</NavLink>
+                                    </li>
+                                : null
+                                }
                             </ul>
                         </nav>
                     <Route exact path="/" component={Me} />
-                    <Route path="/reports" component={Reports} />
                     <Route path="/register" component={Register} />
                     <Route path="/login" component={Login} />
-                    <Route path="/chat" component={Chat} />
+                    <Route path="/trade" component={Trade} />
+                    <Route path="/profile/:username" component={Profile} />
                   </div>
                 </Router>
             </div>

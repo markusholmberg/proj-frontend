@@ -1,20 +1,29 @@
 import React, { Component } from 'react';
+
 // import { BrowserRouter as Router, Route, Link } from 'react';
 // import '../style/App.css';
-import logo from "../markus.jpg";
+
 
 export default class Me extends Component {
     render() {
         return (
-            <div className="first">
-                <div className="about">
-                    <h1>About me</h1>
-                    <p>My name is Markus Holmberg, I am 21 years old and born in Singapore where I lived for about 4 months until I moved to Sweden.<br />
-                    I am studying the third year of Webprogramming at Blekinge Institute of Technology.
-                    In my freetime I like to play videogames, hang out with friends, go to the gym or go skiing in the winter.
+            <div>
+                <div className="background">
+                    <div className="caption">
+                        <span>Buy and sell WoW gold and items</span>
+                    </div>
+                </div>
+                <div style={{"color": "#777", "backgroundColor": "white", "padding": "50px 80px", "textAlign": "justify"}}>
+                    <h3 style={{"textAlign": "center"}}>Welcome to best page for trading WoW items!</h3>
+                    <p style={{"textAlign": "center"}}>Here you can trade different items from World of Warcraft with other users. Go to the trading link in
+                        the navigation field and start trading with other people! Scroll down for a guide on how to get started. We never ever scam our users.
                     </p>
                 </div>
-                <img src={logo} alt="Me" className="img"/>
+                <div className="bgimg2">
+                    <div className="caption">
+                        <span style={{"backgroundColor": "transparent", "fontSize": "25px", "color": "#f7f7f7"}}>How to get started?</span>
+                    </div>
+                </div>
             </div>
         )
     }
