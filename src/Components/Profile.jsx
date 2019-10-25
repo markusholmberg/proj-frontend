@@ -1,4 +1,12 @@
 import React, { Component } from 'react';
+import { css } from '@emotion/core';
+import BounceLoader from 'react-spinners/BounceLoader';
+
+const override = css`
+    display: block;
+    margin: 0 auto;
+    border-color: red;
+`;
 
 export default class Profile extends Component {
     constructor(props) {
@@ -7,7 +15,10 @@ export default class Profile extends Component {
             activeBalance: 0,
             balance: 0,
             user: "",
-            items: []
+            items: [],
+            allItems: [],
+            loading: true,
+            quantity: []
         }
     }
     componentDidMount = () => {
@@ -26,6 +37,44 @@ export default class Profile extends Component {
         })
         .catch(error => console.error('Error:', error));
 
+        fetch(process.env.REACT_APP_API + '/trade', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then(response => response.json())
+        .then((data) => {
+            let item = []
+
+            for (var i = 0; i < data.data.length; i++) {
+                item.push(data.data[i])
+            }
+            this.setState({
+                allItems: item
+            })
+        })
+        .catch(error => console.error('Error:', error));
+
+        fetch(process.env.REACT_APP_API + '/profile/' + localStorage.getItem("user") + '/getInv', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then(response => response.json())
+        .then((data) => {
+            let amount = []
+
+            for (var i = 0; i < data.data.length; i++) {
+                amount.push(data.data[i])
+            }
+            this.setState({
+                quantity: amount
+            })
+        })
+        .catch(error => console.error('Error:', error));
+
         fetch(process.env.REACT_APP_API + '/profile/' + localStorage.getItem("user") + "/items", {
             method: "GET",
             headers: {
@@ -40,7 +89,8 @@ export default class Profile extends Component {
                 objects.push(items.data[i])
             }
             this.setState({
-                items: objects
+                items: objects,
+                loading: false
             })
             console.log(items)
         })
@@ -97,13 +147,38 @@ export default class Profile extends Component {
                             <input type="submit" name="submit" value="Add balance"/>
                         </form>
                     </div>
-                    <h3 style={{"color": "white"}}>Your active listings</h3>
-                    {this.state.items.map((item, i) => (
-                        <div key={i} className="items">
-                            <p key={item.name} style={{"color": "white"}}>{item.name} Price: {item.price}$</p>
-                            <img key={item.img} src={`/icons/${item.img}`} alt=""/>
+                    {this.state.loading === true ?
+                        <div className='sweet-loading'>
+                            <BounceLoader
+                              css={override}
+                              sizeUnit={"px"}
+                              size={150}
+                              color={'red'}
+                              loading={this.state.loading}
+                            />
+                            <p style={{"color": "white", "textAlign": "center"}}>Loading items</p>
                         </div>
-                    ))}
+                    :
+                    <div>
+                        <div className="inventory">
+                            <h3>Your inventory</h3>
+                                {this.state.quantity === [] ?
+                                    <p>Hej</p>
+                                :
+                                    <div className="inventoryItems">
+                                        {this.state.allItems.map((item, i) => (
+                                            <div key={i}>
+                                                <p key={item.name}>{item.name}</p>
+                                                <img key={item.img} src={`/icons/${item.img}`} alt=""/>
+                                                <p key={i}>Stock: </p>
+                                            </div>
+                                        ))}
+
+                                    </div>
+                                }
+                        </div>
+                    </div>
+                    }
                 </div>
             </div>
         )

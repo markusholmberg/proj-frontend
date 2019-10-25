@@ -1,6 +1,13 @@
 body, html {
     height: 100%;
-    font-family: sans-serif;
+    font-family: "WarcraftFont";
+    scroll-behavior: smooth;
+    font-size: 20px;
+}
+
+@font-face {
+    font-family: "WarcraftFont";
+    src: url('LifeCraft_Font.ttf') format('truetype');
 }
 
 span {
@@ -153,8 +160,29 @@ input[type=submit] {
 .items {
     background-color: rgba(25, 25, 25, 0.80);
     margin-bottom: 1em;
-    width: 40%;
+    /* width: 40%; */
     border-radius: 0.5em;
+}
+
+.selectedItem {
+    float: right;
+    width: 40%;
+    display: none;
+    color: white;
+}
+
+.inventory {
+    color: white;
+    border-radius: 0.5em;
+}
+
+.inventoryItems img:not(:last-of-type) {
+    padding-right: 2em;
+}
+
+.inventoryItems {
+    display: inline-block;
+    background-color: rgba(25, 25, 25, 0.80);
 }
 
 .icon {

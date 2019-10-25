@@ -85,6 +85,16 @@ export default class Register extends Component {
             })
             .then(response => console.log('Success:', JSON.stringify(response)))
             .catch(error => console.error('Error:', error));
+
+            fetch(process.env.REACT_APP_API + "/register/addItems", {
+                method: "POST",
+                body: JSON.stringify(values),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            .then(response => console.log('Success:', JSON.stringify(response)))
+            .catch(error => console.error('Error:', error));
             // console.log("You're now registered")
             // document.getElementById("green").style.display = "block";
             // document.getElementById("error").style.display = "none";

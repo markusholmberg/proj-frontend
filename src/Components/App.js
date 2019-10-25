@@ -48,7 +48,7 @@ export default class App extends Component {
                     <Route exact path="/" component={Me} />
                     <Route path="/register" component={Register} />
                     <Route path="/login" component={Login} />
-                    <Route path="/trade" component={Trade} />
+                    <Route exact path="/trade" component={Trade} />
                     <Route path="/profile/:username" component={Profile} />
                   </div>
                 </Router>

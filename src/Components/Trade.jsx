@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 // import { BrowserRouter as Router, Route, Link } from 'react';
-import { Route, NavLink } from 'react-router-dom'
-import ReportsView from './Reports/ReportsView';
 import { css } from '@emotion/core';
 import BounceLoader from 'react-spinners/BounceLoader';
-
-// import '../style/App.css';
+import Chart from 'chart.js';
 
 const override = css`
     display: block;
@@ -16,9 +13,12 @@ const override = css`
 export default class Trade extends Component {
     constructor(props) {
         super(props);
+        this.myRef=null
         this.state = {
             items: [],
-            loading: true
+            loading: true,
+            trading: false,
+            selectedItem: []
         }
     }
 
@@ -45,6 +45,101 @@ export default class Trade extends Component {
         .catch(error => console.error('Error:', error));
     }
 
+    onClick = (e) => {
+        e.preventDefault();
+        this.setState({
+            trading: true
+        })
+        document.getElementById("item").style.display = "inline-block";
+        console.log(e.target.textContent)
+        fetch(process.env.REACT_APP_API + "/trade/" + e.target.textContent, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            let item = []
+
+            for (var i = 0; i < data.data.length; i++) {
+                item.push(data.data[i])
+            }
+            this.setState({
+                selectedItem: item
+            })
+        })
+        .then(data => {
+            let ctx = document.getElementById('myChart');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    datasets: [{
+                        label: 'Price change',
+                        data: [this.state.selectedItem[0].price],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    buyItem = (e) => {
+        const values = {
+            "username": localStorage.getItem("user"),
+            "item": this.state.selectedItem[0].name,
+            "price": this.state.selectedItem[0].price,
+            "quantity": this.state.selectedItem[0].quantity
+        }
+        fetch(process.env.REACT_APP_API + "/trade/updatePrice", {
+            method: "POST",
+            body: JSON.stringify(values),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .catch(error => console.error('Error:', error));
+
+        fetch(process.env.REACT_APP_API + "/trade/updateQuantity", {
+            method: "POST",
+            body: JSON.stringify(values),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .catch(error => console.error('Error:', error));
+        console.log("Item bought")
+    }
+
     render() {
         console.log(this.state)
         return (
@@ -57,7 +152,7 @@ export default class Trade extends Component {
                 <div style={{"color": "#777", "backgroundColor": "white", "padding": "50px 80px", "textAlign": "justify"}}>
                     <h3 style={{"textAlign": "center"}}>All listed items at this time</h3>
                 </div>
-                <div className="bgimg2">
+                <div style={{"overflow": "auto"}} className="bgimg2">
                     {this.state.loading === true ?
                         <div className='sweet-loading'>
                             <BounceLoader
@@ -70,23 +165,35 @@ export default class Trade extends Component {
                             <p style={{"color": "white", "textAlign": "center"}}>Loading items</p>
                         </div>
                     :
-                    <div>
+                    <div style={{"width": "40%", "display": "inline-block"}}>
                         <h3 style={{"color": "white"}}>Items up for trade</h3>
                         {this.state.items.map((item, i) => (
                             <div key={i} className="items">
-                                <p key={item.name} style={{"color": "white"}}>{item.name} Price: {item.price}$</p>
-                                <p key={item.i} style={{"color": "white"}}>User: {item.user}</p>
+                                <p onClick={this.onClick} key={item.name} style={{"color": "white", "cursor": "pointer"}}>{item.name} </p>
+                                <p style={{"color": "white"}}>Price: {item.price}$</p>
                                 <img key={item.img} src={`/icons/${item.img}`} alt=""/>
-                                {localStorage.getItem("access_token") !== null ?
-                                    <NavLink activeClassName="activeReport" to={`/trade/${item._id}`}>Trade </NavLink>
-                                : null
-                                }
+                                <p key={item.quantity} style={{"color": "white"}}>Stock: {item.quantity}</p>
                             </div>
                         ))}
-                        <Route path="/reports/week/:id" component={ReportsView} />
                     </div>
                     }
-
+                    <div id="item" className="selectedItem">
+                        <h3>Selected Item</h3>
+                        {this.state.selectedItem.map((selected, i) =>(
+                            <div key={i} className="items">
+                                <p key={i}>{selected.name}</p>
+                                <p style={{"color": "white"}}>Price: {selected.price}$</p>
+                                <img key={selected.img} src={`/icons/${selected.img}`} alt=""/>
+                                <p key={selected.name} style={{"color": "white"}}>Stock: {selected.quantity}</p>
+                                {localStorage.getItem("user") === selected.user ?
+                                    null
+                                :
+                                    <button onClick={this.buyItem}>Buy item</button>
+                                }
+                                <canvas id="myChart" width="400" height="400"></canvas>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         )
