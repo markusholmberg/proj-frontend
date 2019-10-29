@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import { css } from '@emotion/core';
 import BounceLoader from 'react-spinners/BounceLoader';
 import Chart from 'chart.js';
+import io from "socket.io-client";
 
+const socket = io('http://localhost:8300');
 const override = css`
     display: block;
     margin: 0 auto;
@@ -18,7 +20,9 @@ export default class Trade extends Component {
             items: [],
             loading: true,
             trading: false,
-            selectedItem: []
+            selectedItem: [],
+            userBalance: 0,
+            user: ""
         }
     }
 
@@ -43,6 +47,28 @@ export default class Trade extends Component {
             // console.log(this.state)
         })
         .catch(error => console.error('Error:', error));
+
+        fetch(process.env.REACT_APP_API + '/profile/' + localStorage.getItem("user"), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then(response => response.json())
+        .then((data) => {
+            this.setState({
+                userBalance: data.data[0].balance,
+                user: data.data[0].username
+            })
+        })
+        .catch(error => console.error('Error:', error));
+
+        socket.on("buy item", function(price) {
+            const priceText = document.getElementById("price");
+            // const priceTwo = document.getElementById("priceTwo");
+            priceText.textContent = price;
+            // priceTwo.textContent = price;
+        })
     }
 
     onClick = (e) => {
@@ -77,23 +103,10 @@ export default class Trade extends Component {
                     labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
                     datasets: [{
                         label: 'Price change',
-                        data: [this.state.selectedItem[0].price],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
+                        data: this.state.selectedItem[0].history,
+                        fill: false,
+                        borderColor:
                             'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
                         borderWidth: 1
                     }]
                 },
@@ -136,6 +149,20 @@ export default class Trade extends Component {
             }
         })
         .then(response => response.json())
+        .then(response => {
+            const price = response.affected.value.price;
+            socket.emit("buy item", price);
+        })
+        .catch(error => console.error('Error:', error));
+
+        fetch(process.env.REACT_APP_API + "/trade/yourQuantity", {
+            method: "POST",
+            body: JSON.stringify(values),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
         .catch(error => console.error('Error:', error));
         console.log("Item bought")
     }
@@ -170,7 +197,7 @@ export default class Trade extends Component {
                         {this.state.items.map((item, i) => (
                             <div key={i} className="items">
                                 <p onClick={this.onClick} key={item.name} style={{"color": "white", "cursor": "pointer"}}>{item.name} </p>
-                                <p style={{"color": "white"}}>Price: {item.price}$</p>
+                                <p id="priceTwo" style={{"color": "white"}}>Price: {item.price}$</p>
                                 <img key={item.img} src={`/icons/${item.img}`} alt=""/>
                                 <p key={item.quantity} style={{"color": "white"}}>Stock: {item.quantity}</p>
                             </div>
@@ -182,11 +209,11 @@ export default class Trade extends Component {
                         {this.state.selectedItem.map((selected, i) =>(
                             <div key={i} className="items">
                                 <p key={i}>{selected.name}</p>
-                                <p style={{"color": "white"}}>Price: {selected.price}$</p>
+                                <p id="price" style={{"color": "white"}}>Price: {selected.price}$</p>
                                 <img key={selected.img} src={`/icons/${selected.img}`} alt=""/>
                                 <p key={selected.name} style={{"color": "white"}}>Stock: {selected.quantity}</p>
-                                {localStorage.getItem("user") === selected.user ?
-                                    null
+                                { this.state.userBalance < selected.price ?
+                                    <p>You don't have enough money for this item</p>
                                 :
                                     <button onClick={this.buyItem}>Buy item</button>
                                 }

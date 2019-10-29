@@ -10,7 +10,7 @@ export default class Me extends Component {
             <div>
                 <div className="background">
                     <div className="caption">
-                        <span>Buy and sell WoW gold and items</span>
+                        <span>Buy and sell WoW items</span>
                     </div>
                 </div>
                 <div style={{"color": "#777", "backgroundColor": "white", "padding": "50px 80px", "textAlign": "justify"}}>
