@@ -72,7 +72,7 @@ export default class Login extends Component {
             .catch(error => console.error('Error:', error));
             document.getElementById("green").style.display = "block";
             document.getElementById("error").style.display = "none";
-            window.location.href="/"
+            // window.location.href="/"
         }
     }
 

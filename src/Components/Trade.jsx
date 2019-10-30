@@ -6,7 +6,7 @@ import Chart from 'chart.js';
 import io from "socket.io-client";
 import Line from "./Line";
 
-const socket = io('https://proj-socket.mahm.me');
+const socket = io('https://socket-proj.mahm.me');
 // const socket = io('http://localhost:8300');
 const override = css`
     display: block;
