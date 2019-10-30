@@ -4,6 +4,7 @@ import { css } from '@emotion/core';
 import BounceLoader from 'react-spinners/BounceLoader';
 import Chart from 'chart.js';
 import io from "socket.io-client";
+import Line from "./Line";
 
 const socket = io('http://localhost:8300');
 const override = css`
@@ -15,14 +16,13 @@ const override = css`
 export default class Trade extends Component {
     constructor(props) {
         super(props);
-        this.myRef=null
         this.state = {
             items: [],
             loading: true,
             trading: false,
             selectedItem: [],
             userBalance: 0,
-            user: ""
+            user: "",
         }
     }
 
@@ -63,12 +63,6 @@ export default class Trade extends Component {
         })
         .catch(error => console.error('Error:', error));
 
-        socket.on("buy item", function(price) {
-            const priceText = document.getElementById("price");
-            // const priceTwo = document.getElementById("priceTwo");
-            priceText.textContent = price;
-            // priceTwo.textContent = price;
-        })
     }
 
     onClick = (e) => {
@@ -93,33 +87,14 @@ export default class Trade extends Component {
             }
             this.setState({
                 selectedItem: item
+            }, () => {
+                let item = this.state.selectedItem[0];
+                socket.on("buy item", function(price) {
+                    const priceText = document.getElementById("price");
+                    priceText.textContent = "Price: " + price.price.toFixed(2) + "$";
+                    item.history.push(price.price.toFixed(2));
+                })
             })
-        })
-        .then(data => {
-            let ctx = document.getElementById('myChart');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                    datasets: [{
-                        label: 'Price change',
-                        data: this.state.selectedItem[0].history,
-                        fill: false,
-                        borderColor:
-                            'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            });
         })
         .catch(error => console.error('Error:', error));
     }
@@ -194,10 +169,11 @@ export default class Trade extends Component {
                     :
                     <div style={{"width": "40%", "display": "inline-block"}}>
                         <h3 style={{"color": "white"}}>Items up for trade</h3>
+                        <h4 style={{"color": "white"}}>Your balance: {this.state.userBalance.toFixed(2)}$</h4>
                         {this.state.items.map((item, i) => (
                             <div key={i} className="items">
                                 <p onClick={this.onClick} key={item.name} style={{"color": "white", "cursor": "pointer"}}>{item.name} </p>
-                                <p id="priceTwo" style={{"color": "white"}}>Price: {item.price}$</p>
+                                <p id="priceTwo" style={{"color": "white"}}>Price: {item.price.toFixed(2)}$</p>
                                 <img key={item.img} src={`/icons/${item.img}`} alt=""/>
                                 <p key={item.quantity} style={{"color": "white"}}>Stock: {item.quantity}</p>
                             </div>
@@ -209,7 +185,7 @@ export default class Trade extends Component {
                         {this.state.selectedItem.map((selected, i) =>(
                             <div key={i} className="items">
                                 <p key={i}>{selected.name}</p>
-                                <p id="price" style={{"color": "white"}}>Price: {selected.price}$</p>
+                                <p id="price" style={{"color": "white"}}>Price: {selected.price.toFixed(2)}$</p>
                                 <img key={selected.img} src={`/icons/${selected.img}`} alt=""/>
                                 <p key={selected.name} style={{"color": "white"}}>Stock: {selected.quantity}</p>
                                 { this.state.userBalance < selected.price ?
@@ -217,7 +193,7 @@ export default class Trade extends Component {
                                 :
                                     <button onClick={this.buyItem}>Buy item</button>
                                 }
-                                <canvas id="myChart" width="400" height="400"></canvas>
+                                <Line data={this.state.selectedItem[0].history}/>
                             </div>
                         ))}
                     </div>

@@ -100,7 +100,7 @@ export default class Login extends Component {
                                     ))}
                                 </div>
                                 <div className="form-group">
-                                    <label>Username</label>
+                                    <label>E-Mail</label>
                                     <input ref="user" type="text" name="username" onChange={this.onChangeUsername} className="form-control"/>
                                 </div>
                                 <div className="form-group">

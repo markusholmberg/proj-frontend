@@ -24,6 +24,9 @@ export default class Me extends Component {
                         <span style={{"backgroundColor": "transparent", "fontSize": "25px", "color": "#f7f7f7"}}>How to get started?</span>
                     </div>
                 </div>
+                <div style={{"color": "#777", "backgroundColor": "white", "padding": "50px 80px", "textAlign": "justify"}}>
+                    <h3 style={{"textAlign": "center"}}>Just register then go tou your profile add some balance to your account and then start trading!</h3>
+                </div>
             </div>
         )
     }

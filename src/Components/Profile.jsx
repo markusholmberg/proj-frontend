@@ -192,7 +192,7 @@ export default class Profile extends Component {
                     <h3 style={{"textAlign": "center"}}>Here you can find all of your listed items and also add money to your wallet</h3>
                 </div>
                 <div style={{"overflow": "auto"}} className="bgimg2">
-                    <h3 style={{"color": "white"}}>Your balance: {this.state.activeBalance}$</h3>
+                    <h3 style={{"color": "white"}}>Your balance: {this.state.activeBalance.toFixed(2)}$</h3>
                     <div className="form-group">
                         <form onSubmit={this.onSubmit}>
                             <select name="balance" className="form-control" onChange={this.onChange}>
@@ -232,7 +232,7 @@ export default class Profile extends Component {
                         {this.state.selectedItem.map((selected, i) =>(
                             <div key={i} className="items">
                                 <p key={i}>{selected.name}</p>
-                                <p style={{"color": "white"}}>Price: {selected.price}$</p>
+                                <p style={{"color": "white"}}>Price: {selected.price.toFixed(2)}$</p>
                                 <img key={selected.img} src={`/icons/${selected.img}`} alt=""/>
                                 <p key={selected.name} style={{"color": "white"}}>Total stock: {selected.quantity}</p>
                                 {this.state.oneItem.quantity === 0 ?
