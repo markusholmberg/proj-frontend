@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@emotion/core": "^10.0.21",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "bootstrap": "^4.3.1",
     "chart.js": "^2.8.0",
     "chromedriver": "^77.0.0",
